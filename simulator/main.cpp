@@ -10,8 +10,14 @@
 using namespace std;
 void printSnapShot(FILE* snapShot, int cycle, MyRegister* reg, ProgramCounter* pc);
 void print(FILE* debug, int cycle, MyRegister* reg, ProgramCounter* pc);
-int main()
+int main(int argc, char* argv[])
 {
+    int iMemorySize = 64, dMemorySize = 32, iMemoryPageSize = 8, dMemoryPageSize = 16;
+    int totalICacheSize = 16, iCacheBlockSize = 4, iCacheAssociativity = 4;
+    int totalDCacheSize = 16, dCacheBlockSize = 4, dCacheAssociativity = 1;
+    for(int i=0; i<argc; i++){
+        printf("%s\n", argv[i]);
+    }
 
     Memory* iMemory;
     Memory* dMemory;
@@ -30,7 +36,7 @@ int main()
     FILE *errorFile;
 
     FILE* debug;
-    
+
     dImage = fopen("dimage.bin", "rb");
     iImage = fopen("iimage.bin", "rb");
     insOut = fopen("ins1.txt", "w");
@@ -79,8 +85,8 @@ int main()
         printSnapShot(snapShot, cycle, reg, pc);
         print(debug, cycle, reg, pc);
        // reg->print();
-        
-        
+
+
 
        //system("PAUSE");
     }
