@@ -5,8 +5,12 @@
 class PageTable
 {
     public:
-        PageTable();
+        PageTable(int pageSize);
         virtual ~PageTable();
+        bool* valid;
+        unsigned int* physicalAddresses;
+        int pageSize;
+
     protected:
     private:
 };
