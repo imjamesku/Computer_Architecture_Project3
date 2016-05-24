@@ -5,6 +5,7 @@
 #include "Memory.h"
 #include "Decoder.h"
 #include "ControlUnit.h"
+#include "MemoryManager.h"
 #include <cstdlib>
 #define sp 29
 using namespace std;
@@ -15,9 +16,12 @@ int main(int argc, char* argv[])
     int iMemorySize = 64, dMemorySize = 32, iMemoryPageSize = 8, dMemoryPageSize = 16;
     int totalICacheSize = 16, iCacheBlockSize = 4, iCacheAssociativity = 4;
     int totalDCacheSize = 16, dCacheBlockSize = 4, dCacheAssociativity = 1;
-    for(int i=0; i<argc; i++){
+    /*for(int i=0; i<argc; i++){
         printf("%s\n", argv[i]);
-    }
+    }*/
+    MemoryManager* memoryManager = new MemoryManager(iMemorySize, dMemorySize, iMemoryPageSize, dMemoryPageSize,
+                                                     totalICacheSize, iCacheBlockSize, iCacheAssociativity, totalDCacheSize,
+                                                    dCacheBlockSize, dCacheAssociativity);
 
     Memory* iMemory;
     Memory* dMemory;
@@ -49,6 +53,8 @@ int main(int argc, char* argv[])
     readProgramCounter = readArray[0] << 24 | readArray[1] << 16 | readArray[2] << 8 | readArray[3];
     pc = new ProgramCounter(readProgramCounter);
     iMemory = new Memory(iImage, pc->PC);
+
+    memoryManager->initializeDisk(iMemory->memory);
 
     //read dimage
     reg = new MyRegister(dImage);
