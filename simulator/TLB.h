@@ -5,9 +5,11 @@
 class TLB
 {
     public:
-        TLB(int pageTableSize);
+        TLB(int pageSize);
+        int getPhysicalAddress(unsigned int virtualAddress);
         virtual ~TLB();
         bool* valid;
+        unsigned int* tag;
         unsigned int* lastRefCycle;
         unsigned int* physicalAddress;
         int pageSize;

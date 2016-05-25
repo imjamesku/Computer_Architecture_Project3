@@ -2,6 +2,7 @@
 #define MEMORYMANAGER_H
 #include "Memory.h"
 #include "PageTable.h"
+#include "TLB.h"
 
 
 class MemoryManager
@@ -11,6 +12,7 @@ class MemoryManager
         int totalICacheSize, iCacheBlockSize, iCacheAssociativity;
         int totalDCacheSize, dCacheBlockSize, dCacheAssociativity;
 
+        TLB* iTLB;
         PageTable* iPageTable;
         Memory* iMemory;
         unsigned char* iDisk;

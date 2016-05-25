@@ -15,6 +15,7 @@ MemoryManager::MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSi
     this->dCacheBlockSize = dCacheBlockSize;
     this->dCacheAssociativity = dCacheAssociativity;
 
+    this->iTLB = new TLB(iMemoryPageSize);
     this->iPageTable = new PageTable(iMemoryPageSize);
     this->iDisk = new unsigned char[1024];
     this->iMemory = new Memory(iMemorySize, iMemoryPageSize);
@@ -37,6 +38,7 @@ MemoryManager::MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSi
 MemoryManager::~MemoryManager()
 {
     //dtor
+    delete this->iTLB;
     delete this->iPageTable;
     delete this->iDisk;
     delete this->iMemory;
@@ -48,6 +50,11 @@ void MemoryManager::initializeDisk(unsigned char* iInput){
 }
 
 unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
+    int physicalAddress = iTLB->getPhysicalAddress(virtualAddress);
+    if(physicalAddress != -1){
+        //TLB hits
+
+    }
     if(iPageTable->getIsInMemory(virtualAddress) == 1){
         iPageTableHits++;
         unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
