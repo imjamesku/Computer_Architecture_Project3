@@ -21,6 +21,8 @@ class MemoryManager
         unsigned int getPhysicalAddressViaPageTable(unsigned int vertualAddress);
         unsigned char* getIData(unsigned int vertualAddress, int cycle);
         unsigned char* swapPages(unsigned int virtualAddress);
+        void printReport();
+        void displayReport();
         virtual ~MemoryManager();
        // unsigned char readData(unsigned int address);
        // unsigned char* getInsPointer(unsigned int pc);

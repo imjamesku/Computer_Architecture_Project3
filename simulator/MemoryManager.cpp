@@ -67,4 +67,29 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
     }
 
 }
+void MemoryManager::displayReport(){
+    printf("ICache :\n");
+    printf("# hits: %u\n", iCacheHits);
+    printf("# misses: %u\n\n",iCacheMisses);
+
+    printf("DCache :\n");
+    printf("# hits: %u\n", dCacheHits);
+    printf("# misses: %u\n\n", dCacheMisses);
+
+    printf("ITLB :\n");
+    printf("# hits: %u\n", iTlbHits);
+    printf("# misses: %u\n\n", iTlbMisses);
+
+    printf("DTLB :\n");
+    printf("# hits: %u\n", dTlbHits);
+    printf("# misses: %u\n\n", dTlbHits);
+
+    printf("IPageTable :\n");
+    printf("# hits: %u\n", iPageTableHits);
+    printf("# misses: %u\n\n", iPageTalbeMisses);
+
+    printf("DPageTable :\n");
+    printf("# hits: %u\n", dPageTableHits);
+    printf("# misses: %u\n\n", dPageTableMisses);
+}
 
