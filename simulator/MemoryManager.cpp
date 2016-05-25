@@ -17,7 +17,7 @@ MemoryManager::MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSi
 
     this->iPageTable = new PageTable(iMemoryPageSize);
     this->iDisk = new unsigned char[1024];
-    this->iMemory = new unsigned char[iMemorySize];
+    this->iMemory = new Memory(iMemorySize, iMemoryPageSize);
 }
 
 MemoryManager::~MemoryManager()
@@ -32,3 +32,17 @@ void MemoryManager::initializeDisk(unsigned char* iInput){
         this->iDisk[i] = iInput[i];
     }
 }
+
+unsigned char* MemoryManager::getData(unsigned int virtualAddress, int cycle){
+    if(iPageTable->getIsInMemory(virtualAddress)){
+        unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress, cycle);
+        iMemory->updateLastRefCycle(physicalAddress, cycle);
+        return iMemory->getMemoryPointer(physicalAddress);
+    }
+    else{
+        unsigned int virtualPageHeadAddress = virtualAddress - virtualAddress % iMemoryPageSize;
+        unsigned char* virtualPageHeadPointer = iDisk + virtualPageHeadAddress;
+        unsigned int victimPageHeadPhysicalAddress = iMemory->getVictimPageHeadPhysicalAddress();
+    }
+}
+
