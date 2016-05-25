@@ -24,18 +24,32 @@ PageTable::~PageTable()
     delete physicalPageNumber;
 }
 
-unsigned int PageTable::getPhysicalAddress(unsigned int virtualAddress, int cycle){
+unsigned int PageTable::getPhysicalAddress(unsigned int virtualAddress){
     unsigned int virtualPageNumber = virtualAddress / pageSize;
     unsigned int pageOffset = virtualAddress % pageSize;
     if(isInMemory[virtualPageNumber]){
         unsigned int physicalAddress = physicalPageNumber[virtualPageNumber] * pageSize + pageOffset;
         return physicalAddress;
     }
-    return virtualAddress;
+    return -1;
 }
 bool PageTable::getIsInMemory(unsigned int virtualAddress){
     unsigned int virtualPageNumber = virtualAddress / pageSize;
     return isInMemory[virtualPageNumber];
+}
+void PageTable::swapPages(unsigned int victimPagePhysicalAddress, unsigned int virtualAddressOfDataIntoMem){
+    unsigned int victimPageNumber = victimPagePhysicalAddress / pageSize;
+    unsigned int virtualPageNumberOfDataIntoMem = virtualAddressOfDataIntoMem / pageSize;
+
+    for(int i=0; i<numOfEntries; i++){
+        if(isInMemory[i] == 1 && physicalPageNumber[i] == victimPageNumber){
+            isInMemory[i] = 0;
+            physicalPageNumber[i] = -1;
+            break;
+        }
+    }
+    isInMemory[virtualPageNumberOfDataIntoMem] = 1;
+    physicalPageNumber[virtualPageNumberOfDataIntoMem] = victimPageNumber;
 }
 
 

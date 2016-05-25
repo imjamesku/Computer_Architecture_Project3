@@ -70,3 +70,10 @@ unsigned int Memory::getVictimPageHeadPhysicalAddress(){
     }
     return victimAddress;
 }
+
+void Memory::swapPages(unsigned char* virtualPageHeadPointer, unsigned int targetPageHeadPhysicalAddress){
+    for(int i=0; i<pageSize; i++){
+        memory[targetPageHeadPhysicalAddress+i] = virtualPageHeadPointer[i];
+    }
+    isOccypied[targetPageHeadPhysicalAddress/pageSize] = 1;
+}

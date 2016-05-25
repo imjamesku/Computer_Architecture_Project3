@@ -14,6 +14,7 @@ class Memory
         int getMemorySize();
         void updateLastRefCycle(unsigned int physicalAddress, int cycle);
         unsigned int getVictimPageHeadPhysicalAddress();
+        void swapPages(unsigned char* virtualPageHeadPointer, unsigned int targetPageHeadPhysicalAddress);
         virtual ~Memory();
 
 

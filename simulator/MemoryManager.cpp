@@ -18,6 +18,20 @@ MemoryManager::MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSi
     this->iPageTable = new PageTable(iMemoryPageSize);
     this->iDisk = new unsigned char[1024];
     this->iMemory = new Memory(iMemorySize, iMemoryPageSize);
+
+    iCacheHits = 0;
+    iCacheMisses = 0;
+    dCacheHits = 0;
+    dCacheMisses = 0;
+    iTlbHits = 0;
+    iTlbMisses = 0;
+    dTlbHits = 0;
+    dTlbMisses = 0;
+    iPageTableHits = 0;
+    iPageTalbeMisses = 0;
+    dPageTableHits = 0;
+    dPageTableMisses = 0;
+
 }
 
 MemoryManager::~MemoryManager()
@@ -33,16 +47,24 @@ void MemoryManager::initializeDisk(unsigned char* iInput){
     }
 }
 
-unsigned char* MemoryManager::getData(unsigned int virtualAddress, int cycle){
-    if(iPageTable->getIsInMemory(virtualAddress)){
-        unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress, cycle);
+unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
+    if(iPageTable->getIsInMemory(virtualAddress) == 1){
+        iPageTableHits++;
+        unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
         iMemory->updateLastRefCycle(physicalAddress, cycle);
         return iMemory->getMemoryPointer(physicalAddress);
     }
     else{
+        iPageTalbeMisses++;
         unsigned int virtualPageHeadAddress = virtualAddress - virtualAddress % iMemoryPageSize;
         unsigned char* virtualPageHeadPointer = iDisk + virtualPageHeadAddress;
         unsigned int victimPageHeadPhysicalAddress = iMemory->getVictimPageHeadPhysicalAddress();
+        iMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
+        iMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
+        iPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
+        unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
+        return iMemory->getMemoryPointer(physicalAddress);
     }
+
 }
 

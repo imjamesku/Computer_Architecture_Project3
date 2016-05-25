@@ -6,7 +6,8 @@ class PageTable
 {
     public:
         PageTable(int pageSize);
-        unsigned int getPhysicalAddress(unsigned int virtualAddress, int cycle);
+        unsigned int getPhysicalAddress(unsigned int virtualAddress);
+        void swapPages(unsigned int victimPagePhysicalAddress,unsigned int virtualAddressOfDataIntoMem);
       //  unsigned int swapPages(unsigned int virtualAddress);
         bool getIsInMemory(unsigned int virtualAddress);
         virtual ~PageTable();

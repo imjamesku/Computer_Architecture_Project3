@@ -10,6 +10,7 @@ class MemoryManager
         int iMemorySize, dMemorySize, iMemoryPageSize, dMemoryPageSize;
         int totalICacheSize, iCacheBlockSize, iCacheAssociativity;
         int totalDCacheSize, dCacheBlockSize, dCacheAssociativity;
+
         PageTable* iPageTable;
         Memory* iMemory;
         unsigned char* iDisk;
@@ -18,8 +19,7 @@ class MemoryManager
                       int totalDCacheSize, int dCacheBlockSize, int dCacheAssociativity);
         void initializeDisk(unsigned char* iInput);
         unsigned int getPhysicalAddressViaPageTable(unsigned int vertualAddress);
-        unsigned char* getData(unsigned int vertualAddress, int cycle);
-        unsigned char* getDataFromMemory(unsigned int vertualAddress);
+        unsigned char* getIData(unsigned int vertualAddress, int cycle);
         unsigned char* swapPages(unsigned int virtualAddress);
         virtual ~MemoryManager();
        // unsigned char readData(unsigned int address);
@@ -27,6 +27,12 @@ class MemoryManager
        // void writeData(unsigned int address);
     protected:
     private:
+        int iCacheHits, iCacheMisses;
+        int dCacheHits, dCacheMisses;
+        int iTlbHits, iTlbMisses;
+        int dTlbHits, dTlbMisses;
+        int iPageTableHits, iPageTalbeMisses;
+        int dPageTableHits, dPageTableMisses;
 };
 
 #endif // MEMORYMANAGER_H
