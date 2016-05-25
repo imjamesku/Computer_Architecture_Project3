@@ -57,12 +57,15 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
     else{
         iPageTalbeMisses++;
         unsigned int virtualPageHeadAddress = virtualAddress - virtualAddress % iMemoryPageSize;
+        //printf("virtualPageHeadAddress = %u\n", virtualPageHeadAddress);
         unsigned char* virtualPageHeadPointer = iDisk + virtualPageHeadAddress;
         unsigned int victimPageHeadPhysicalAddress = iMemory->getVictimPageHeadPhysicalAddress();
+        //printf("victimPageHeadPhysicalAddress = %d\n", victimPageHeadPhysicalAddress);
         iMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
         iMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
         iPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
         unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
+        //printf("physicalAddress = %d\n", physicalAddress);
         return iMemory->getMemoryPointer(physicalAddress);
     }
 

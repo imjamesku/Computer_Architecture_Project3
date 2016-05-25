@@ -8,10 +8,10 @@ class TLB
         TLB(int pageTableSize);
         virtual ~TLB();
         bool* valid;
-        bool* dirty;
         unsigned int* lastRefCycle;
         unsigned int* physicalAddress;
-        unsigned int TLB_size;
+        int pageSize;
+        int numOfEntries;
     protected:
     private:
 };

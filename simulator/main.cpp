@@ -10,7 +10,7 @@
 #define sp 29
 using namespace std;
 void printSnapShot(FILE* snapShot, int cycle, MyRegister* reg, ProgramCounter* pc);
-void print(FILE* debug, int cycle, MyRegister* reg, ProgramCounter* pc);
+void printDebugFile(FILE* debug, int cycle, MyRegister* reg, ProgramCounter* pc);
 int main(int argc, char* argv[])
 {
     int iMemorySize = 64, dMemorySize = 32, iMemoryPageSize = 8, dMemoryPageSize = 16;
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     reg = new MyRegister(dImage);
    // reg->print();
     dMemory = new Memory(dImage, 0);
-    Decoder d1(iMemory->memory + pc->PC);
+    //Decoder d1(iMemory->memory + pc->PC);
     //d1.print();
     //printf("words = %d\n", iMemory->words);
 
@@ -74,33 +74,39 @@ int main(int argc, char* argv[])
     controlUnit = new ControlUnit(reg, pc, dMemory, errorFile);
 
     printSnapShot(snapShot, cycle, reg, pc);
-    print(debug, cycle, reg, pc);
+    printDebugFile(debug, cycle, reg, pc);
     while(1){
         Decoder d3(iMemory->getMemoryPointer(pc->PC));
+        Decoder testMemory(memoryManager->getIData(pc->PC, cycle));
+        printf("0x%x\n", testMemory.instruction);
+        testMemory.print();
         pc->PC += 4;
         fprintf(debug, "instruction = %x\n", d3.instruction);
 
         d3.printDebug(debug);
 
         cycle++;
-
+        printf("%d\n", cycle);
+        memoryManager->displayReport();
         shutDown = controlUnit->execute(&d3, cycle);//run instruction
         if(d3.instructionName == "halt" || shutDown)
             break;
 
         printSnapShot(snapShot, cycle, reg, pc);
-        print(debug, cycle, reg, pc);
+        printDebugFile(debug, cycle, reg, pc);
        // reg->print();
 
 
 
-       //system("PAUSE");
+       system("PAUSE");
     }
+    memoryManager->displayReport();
     delete dMemory;
     delete iMemory;
     delete controlUnit;
     delete pc;
     delete reg;
+    delete memoryManager;
     fclose(iImage);
     fclose(dImage);
     fclose(insOut);
@@ -115,7 +121,7 @@ void printSnapShot(FILE* snapShot, int cycle, MyRegister* reg, ProgramCounter* p
     fprintf(snapShot, "PC: 0x%08X", pc->PC);
     fprintf(snapShot,"\n\n\n");
 }
-void print(FILE* debug, int cycle, MyRegister* reg, ProgramCounter* pc){
+void printDebugFile(FILE* debug, int cycle, MyRegister* reg, ProgramCounter* pc){
     fprintf(debug, "cycle %d\n", cycle);
     reg->printSnapShot(debug);
     fprintf(debug, "PC: 0x%08X", pc->PC);

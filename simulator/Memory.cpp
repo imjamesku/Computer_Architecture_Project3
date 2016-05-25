@@ -62,9 +62,9 @@ unsigned int Memory::getVictimPageHeadPhysicalAddress(){
     int smallestRefCycle = lastRefCycle[0];
     for(int i=0; i<numberOfPages; i++){
         if(isOccypied[i] == 0)
-            return i;
+            return i*pageSize;
         if(lastRefCycle[i] < smallestRefCycle){
-            victimAddress = i;
+            victimAddress = i*pageSize;
             smallestRefCycle = lastRefCycle[i];
         }
     }
