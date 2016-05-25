@@ -5,8 +5,13 @@
 class TLB
 {
     public:
-        TLB();
+        TLB(int pageTableSize);
         virtual ~TLB();
+        bool* valid;
+        bool* dirty;
+        unsigned int* lastRefCycle;
+        unsigned int* physicalAddress;
+        unsigned int TLB_size;
     protected:
     private:
 };

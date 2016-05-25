@@ -7,9 +7,12 @@ class PageTable
     public:
         PageTable(int pageSize);
         virtual ~PageTable();
-        bool* valid;
+        bool* isInMemory;
+        bool* dirty;
+        unsigned int* lastRefCycle;
         unsigned int* physicalAddresses;
         int pageSize;
+        int numOfEntries;
 
     protected:
     private:
