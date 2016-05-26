@@ -92,5 +92,9 @@ void Cache::replaceBlock(int victimBlockndex, unsigned int physicalAddress, unsi
     for(int i=0; i<blockSize; i++){
         this->content[victimByteIndex + i] = content[i];
     }
+}
 
+unsigned char* Cache::getData(int storedBlockIndex, unsigned int physicalAddress){
+    unsigned int blockOffset = physicalAddress % blockSize;
+    return content + (blockSize*storedBlockIndex + blockOffset);
 }
