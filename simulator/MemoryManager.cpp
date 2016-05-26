@@ -40,10 +40,15 @@ MemoryManager::~MemoryManager()
 {
     //dtor
     delete this->iTLB;
+    //printf("1");
     delete this->iPageTable;
+    //printf("2");
     delete [] this->iDisk;
+    //printf("3");
     delete this->iMemory;
+    //printf("4");
     delete this->iCache;
+    //printf("5");
 }
 void MemoryManager::initializeDisk(unsigned char* iInput){
     for(int i=0; i<1024; i++){
@@ -58,18 +63,52 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         iTlbHits++;
         unsigned int physicalAddress = iTLB->getPhysicalAddress(iTlbIndex, virtualAddress);
         iTLB->updateLastRefCycle(iTlbIndex, cycle);
-        iMemory->updateLastRefCycle(physicalAddress, cycle);
-        return iMemory->getMemoryPointer(physicalAddress);
+        //try to access cache first
+        int iCacheBlockIndex = iCache->getBlockIndex(physicalAddress);
+        if(iCacheBlockIndex != -1){
+            //cache hit
+            iCacheHits++;
+            iCache->updateMru(iCacheBlockIndex);
+            return iCache->getData(iCacheBlockIndex, physicalAddress);
+        }
+        //cache miss
+        iCacheMisses++;
+        unsigned int blockHeadAddress = iCache->getBlockHeadAddress(physicalAddress);
+        iMemory->updateLastRefCycle(blockHeadAddress, cycle);
+        unsigned char* blockHeadDataPointer = iMemory->getMemoryPointer(blockHeadAddress);
+        int victimBlockIndex = iCache->getVictimBlockIndex(blockHeadAddress);
+        iCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
+        iCache->updateMru(victimBlockIndex);
+        return iCache->getData(victimBlockIndex, physicalAddress);
     }
     //TLB missed
     iTlbMisses++;
-
+    unsigned char* returnDataPointer;
     unsigned int physicalAddress;
     if(iPageTable->getIsInMemory(virtualAddress) == 1){
-        //iPageTableHits
+        //Page table hit
         iPageTableHits++;
         physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
-        iMemory->updateLastRefCycle(physicalAddress, cycle);
+        //try to access cache first
+        int iCacheBlockIndex = iCache->getBlockIndex(physicalAddress);
+        if(iCacheBlockIndex != -1){
+            //cache hit
+            iCacheHits++;
+            iCache->updateMru(iCacheBlockIndex);
+            returnDataPointer = iCache->getData(iCacheBlockIndex, physicalAddress);
+        }
+        else{
+            //cache missed
+            iCacheMisses++;
+            unsigned int blockHeadAddress = iCache->getBlockHeadAddress(physicalAddress);
+            iMemory->updateLastRefCycle(physicalAddress, cycle);
+            unsigned char* blockHeadDataPointer = iMemory->getMemoryPointer(blockHeadAddress);
+            int victimBlockIndex = iCache->getVictimBlockIndex(blockHeadAddress);
+            iCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
+            iCache->updateMru(victimBlockIndex);
+            returnDataPointer = iCache->getData(victimBlockIndex, physicalAddress);
+        }
+
         //return iMemory->getMemoryPointer(physicalAddress);
     }
     else{
@@ -83,14 +122,25 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         iMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
         iMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
         iPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
+        //re-translate address
         physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
+        //load to cache
+        unsigned int blockHeadAddress = iCache->getBlockHeadAddress(physicalAddress);
+        iMemory->updateLastRefCycle(physicalAddress, cycle);
+        unsigned char* blockHeadDataPointer = iMemory->getMemoryPointer(blockHeadAddress);
+        int victimBlockIndex = iCache->getVictimBlockIndex(blockHeadAddress);
+        iCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
+        iCache->updateMru(victimBlockIndex);
+        returnDataPointer = iCache->getData(victimBlockIndex, physicalAddress);
         //printf("physicalAddress = %d\n", physicalAddress);
         //return iMemory->getMemoryPointer(physicalAddress);
     }
+    //update TLB
     int victimIndex = iTLB->getVictimIndex();
     iTLB->replacePage(victimIndex, virtualAddress, physicalAddress);
     iTLB->updateLastRefCycle(victimIndex, cycle);
-    return iMemory->getMemoryPointer(physicalAddress);
+    return returnDataPointer;
+
 
 }
 void MemoryManager::displayReport(){

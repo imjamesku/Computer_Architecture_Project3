@@ -26,10 +26,15 @@ Cache::Cache(int cacheSize, int blockSize,int setAssociativity)
 Cache::~Cache()
 {
     //dtor
+    printf("1");
     delete [] valid;
+    printf("2");
     delete [] tag;
+    printf("3");
     delete [] mru;
+    printf("4");
     delete [] content;
+    printf("5");
 }
 int Cache::getBlockIndex(unsigned int physicalAddress){
     //corresponding block index
