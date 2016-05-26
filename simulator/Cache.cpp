@@ -98,3 +98,7 @@ unsigned char* Cache::getData(int storedBlockIndex, unsigned int physicalAddress
     unsigned int blockOffset = physicalAddress % blockSize;
     return content + (blockSize*storedBlockIndex + blockOffset);
 }
+
+unsigned int Cache::getBlockHeadAddress(unsigned int physicalAddress){
+    return physicalAddress - physicalAddress%blockSize;
+}
