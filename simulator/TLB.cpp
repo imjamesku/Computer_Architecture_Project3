@@ -22,10 +22,10 @@ TLB::TLB(int pageSize)
 TLB::~TLB()
 {
     //dtor
-    delete tag;
-    delete lastRefCycle;
-    delete physicalPageNumber;
-    delete valid;
+    delete [] tag;
+    delete [] lastRefCycle;
+    delete [] physicalPageNumber;
+    delete [] valid;
 }
 
 unsigned int TLB::getPhysicalAddress(int index, unsigned int virtualAddress){

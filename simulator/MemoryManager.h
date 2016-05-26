@@ -3,6 +3,7 @@
 #include "Memory.h"
 #include "PageTable.h"
 #include "TLB.h"
+#include "Cache.h"
 
 
 class MemoryManager
@@ -14,6 +15,7 @@ class MemoryManager
 
         TLB* iTLB;
         PageTable* iPageTable;
+        Cache* iCache;
         Memory* iMemory;
         unsigned char* iDisk;
         MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSize, int dMemoryPageSize,

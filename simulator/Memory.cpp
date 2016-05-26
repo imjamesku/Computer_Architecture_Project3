@@ -20,6 +20,8 @@ Memory::Memory(FILE *image, unsigned int startFrom)
     result = fread(readArray, 4, 1, image);
     words = readArray[0] << 24 | readArray[1] << 16 | readArray[2] << 8 | readArray[3];
     result = fread(memory+startFrom, 4, words, image);
+    isOccypied = nullptr;
+    lastRefCycle = nullptr;
 }
 Memory::Memory(int memorySize, int pageSize){
     setMemorySize(memorySize);
@@ -28,7 +30,7 @@ Memory::Memory(int memorySize, int pageSize){
     isOccypied = new bool[numberOfPages];
     lastRefCycle = new int[numberOfPages];
     setMemoryToZero();
-    for(int i=0; i<numberOfPages; i++){
+    for(unsigned int i=0; i<numberOfPages; i++){
         isOccypied[i] = 0;
         lastRefCycle[i] = 0;
     }
@@ -36,6 +38,8 @@ Memory::Memory(int memorySize, int pageSize){
 Memory::~Memory()
 {
     //dtor
+    delete [] isOccypied;
+    delete []lastRefCycle;
 }
 
 void Memory::setMemorySize(int size){
@@ -50,7 +54,7 @@ unsigned char* Memory::getMemoryPointer(int offset){
     return (memory+offset);
 }
 void Memory::setMemoryToZero(){
-    for(int i=0; i<this->memorySize; i++)
+    for(unsigned int i=0; i<this->memorySize; i++)
         memory[i] = 0;
 }
 void Memory::updateLastRefCycle(unsigned int physicalAddress, int cycle){
@@ -60,7 +64,7 @@ void Memory::updateLastRefCycle(unsigned int physicalAddress, int cycle){
 unsigned int Memory::getVictimPageHeadPhysicalAddress(){
     unsigned int victimAddress = 0;
     int smallestRefCycle = lastRefCycle[0];
-    for(int i=0; i<numberOfPages; i++){
+    for(unsigned int i=0; i<numberOfPages; i++){
         if(isOccypied[i] == 0)
             return i*pageSize;
         if(lastRefCycle[i] < smallestRefCycle){
@@ -72,7 +76,7 @@ unsigned int Memory::getVictimPageHeadPhysicalAddress(){
 }
 
 void Memory::swapPages(unsigned char* virtualPageHeadPointer, unsigned int targetPageHeadPhysicalAddress){
-    for(int i=0; i<pageSize; i++){
+    for(unsigned int i=0; i<pageSize; i++){
         memory[targetPageHeadPhysicalAddress+i] = virtualPageHeadPointer[i];
     }
     isOccypied[targetPageHeadPhysicalAddress/pageSize] = 1;

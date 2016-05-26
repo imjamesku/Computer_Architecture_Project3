@@ -1,4 +1,5 @@
 #include "Cache.h"
+#include "stdio.h"
 
 Cache::Cache(int cacheSize, int blockSize,int setAssociativity)
 {
@@ -8,28 +9,19 @@ Cache::Cache(int cacheSize, int blockSize,int setAssociativity)
     this->setAssociativity = setAssociativity;
     this->numOfBlocks = cacheSize/blockSize;
     this->numOfSets = numOfBlocks/setAssociativity;
-    this->sets = new std::vector<CacheSet>(numOfSets, CacheSet(this));
+    this->valid = new bool[numOfBlocks];
+    this->tag = new unsigned int[numOfBlocks];
+    this->mru = new bool[numOfBlocks];
+    this->content = new unsigned char[cacheSize];
+   // this->sets = new std::vector<CacheSet>(numOfSets, CacheSet(this));
 }
 
 Cache::~Cache()
 {
     //dtor
-    delete sets;
+    delete [] valid;
+    delete [] tag;
+    delete [] mru;
+    delete [] content;
 }
 
-Cache::CacheSet::CacheSet(Cache* cacheObject){
- //   this->blocks = new CacheBlock[setAssoviativity];
-    this->blocks = new std::vector<CacheBlock>(cacheObject->numOfBlocks, CacheBlock(cacheObject));
-}
-Cache::CacheSet::~CacheSet(){
-    delete blocks;
-}
-Cache::CacheBlock::CacheBlock(Cache* cacheObject){
-    this->mru = 0;
-    this->tag = 0;
-    this->valid = 0;
-    this->content = new unsigned char[cacheObject->blockSize];
-}
-Cache::CacheBlock::~CacheBlock(){
-    delete content;
-}

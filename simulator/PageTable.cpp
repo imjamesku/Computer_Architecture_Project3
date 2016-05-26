@@ -18,10 +18,9 @@ PageTable::PageTable(int pageSize)
 PageTable::~PageTable()
 {
     //dtor
-    if(isInMemory != nullptr)
-        delete isInMemory;
-    if(physicalPageNumber != nullptr)
-    delete physicalPageNumber;
+    delete [] isInMemory;
+
+    delete [] physicalPageNumber;
 }
 
 unsigned int PageTable::getPhysicalAddress(unsigned int virtualAddress){

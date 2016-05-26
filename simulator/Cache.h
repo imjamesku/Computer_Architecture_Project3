@@ -6,21 +6,6 @@
 class Cache
 {
     public:
-        class CacheBlock{
-            public:
-                bool mru;
-                bool valid;
-                unsigned char* content;
-                unsigned int tag;
-                CacheBlock(Cache* cacheObject);
-                virtual ~CacheBlock();
-        };
-        class CacheSet{
-            public:
-            std::vector<CacheBlock>* blocks;
-            CacheSet(Cache* cacheObject);
-            virtual ~CacheSet();
-        };
         Cache(int cacheSize, int blockSize,int setAssociativity);
         virtual ~Cache();
 
@@ -29,9 +14,10 @@ class Cache
         int setAssociativity;
         int numOfBlocks;
         int numOfSets;
-        std::vector<CacheSet>* sets;
-
-
+        bool* mru;
+        bool* valid;
+        unsigned char* content;
+        unsigned int* tag;
 
     protected:
     private:
