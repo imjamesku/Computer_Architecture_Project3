@@ -7,6 +7,11 @@ class Cache
 {
     public:
         Cache(int cacheSize, int blockSize,int setAssociativity);
+        int getBlockIndex(unsigned int physicalAddress);
+        bool isValid(unsigned int physicalAddress);
+        void updateMru(int index);
+        int getVictimBlockIndex(unsigned int physicalAddress);
+        void replaceBlock(int victimBlockIndex, unsigned int physicalAddress, unsigned char* content);
         virtual ~Cache();
 
         int cacheSize;
