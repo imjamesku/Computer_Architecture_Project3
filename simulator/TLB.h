@@ -5,13 +5,19 @@
 class TLB
 {
     public:
+        //fuctions
         TLB(int pageSize);
-        int getPhysicalAddress(unsigned int virtualAddress);
+        unsigned int getPhysicalAddress(int index, unsigned int virtualAddress);
+        int getIndexToTargetPhysicalAddress(unsigned int virtualAddress);
+        void updateLastRefCycle(int index, int cycle);
+        int getVictimIndex()const;
+        void replacePage(int index, unsigned int virtualAddress, unsigned int physicalAddress);
         virtual ~TLB();
+        //variables
         bool* valid;
         unsigned int* tag;
         unsigned int* lastRefCycle;
-        unsigned int* physicalAddress;
+        unsigned int* physicalPageNumber;
         int pageSize;
         int numOfEntries;
     protected:

@@ -50,18 +50,23 @@ void MemoryManager::initializeDisk(unsigned char* iInput){
 }
 
 unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
-    int physicalAddress = iTLB->getPhysicalAddress(virtualAddress);
-    if(physicalAddress != -1){
+    int iTlbIndex = iTLB->getIndexToTargetPhysicalAddress(virtualAddress);
+    if(iTlbIndex != -1){
         //TLB hits
-
+        unsigned int physicalAddress = iTLB->getPhysicalAddress(iTlbIndex, virtualAddress);
+        iTLB->updateLastRefCycle(iTlbIndex, cycle);
+        iMemory->updateLastRefCycle(physicalAddress, cycle);
+        return iMemory->getMemoryPointer(physicalAddress);
     }
     if(iPageTable->getIsInMemory(virtualAddress) == 1){
+        //iPageTableHits
         iPageTableHits++;
         unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
         iMemory->updateLastRefCycle(physicalAddress, cycle);
         return iMemory->getMemoryPointer(physicalAddress);
     }
     else{
+        //page fault
         iPageTalbeMisses++;
         unsigned int virtualPageHeadAddress = virtualAddress - virtualAddress % iMemoryPageSize;
         //printf("virtualPageHeadAddress = %u\n", virtualPageHeadAddress);
