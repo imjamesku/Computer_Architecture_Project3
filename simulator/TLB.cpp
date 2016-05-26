@@ -37,7 +37,7 @@ unsigned int TLB::getPhysicalAddress(int index, unsigned int virtualAddress){
 int TLB::getIndexToTargetPhysicalAddress(unsigned int virtualAddress){
     unsigned int virtualPageNumber = virtualAddress/pageSize;
     for(int i=0; i<numOfEntries; i++){
-        if(tag[i] == virtualPageNumber){
+        if(valid[i] && tag[i] == virtualPageNumber){
             return i;
         }
     }

@@ -52,18 +52,23 @@ void MemoryManager::initializeDisk(unsigned char* iInput){
 unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
     int iTlbIndex = iTLB->getIndexToTargetPhysicalAddress(virtualAddress);
     if(iTlbIndex != -1){
-        //TLB hits
+        //TLB hit
+        iTlbHits++;
         unsigned int physicalAddress = iTLB->getPhysicalAddress(iTlbIndex, virtualAddress);
         iTLB->updateLastRefCycle(iTlbIndex, cycle);
         iMemory->updateLastRefCycle(physicalAddress, cycle);
         return iMemory->getMemoryPointer(physicalAddress);
     }
+    //TLB missed
+    iTlbMisses++;
+
+    unsigned int physicalAddress;
     if(iPageTable->getIsInMemory(virtualAddress) == 1){
         //iPageTableHits
         iPageTableHits++;
-        unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
+        physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
         iMemory->updateLastRefCycle(physicalAddress, cycle);
-        return iMemory->getMemoryPointer(physicalAddress);
+        //return iMemory->getMemoryPointer(physicalAddress);
     }
     else{
         //page fault
@@ -76,10 +81,14 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         iMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
         iMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
         iPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
-        unsigned int physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
+        physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
         //printf("physicalAddress = %d\n", physicalAddress);
-        return iMemory->getMemoryPointer(physicalAddress);
+        //return iMemory->getMemoryPointer(physicalAddress);
     }
+    int victimIndex = iTLB->getVictimIndex();
+    iTLB->replacePage(victimIndex, virtualAddress, physicalAddress);
+    iTLB->updateLastRefCycle(victimIndex, cycle);
+    return iMemory->getMemoryPointer(physicalAddress);
 
 }
 void MemoryManager::displayReport(){
