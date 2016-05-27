@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     iMemory = new Memory(iImage, pc->PC);
 
     //read dimage
-    reg = new MyRegister(dImage);
+    reg = new MyRegister(dImage, memoryManager);
    // reg->print();
     dMemory = new Memory(dImage, 0);
 

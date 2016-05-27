@@ -3,13 +3,14 @@
 #include <cstdio>
 #include "ProgramCounter.h"
 #include "Memory.h"
+#include "MemoryManager.h"
 #define sp 29
 
 class MyRegister
 {
     public:
         MyRegister();
-        MyRegister(FILE *dImage);
+        MyRegister(FILE *dImage, MemoryManager* memoryManager);
         int setReg(int rt, unsigned int value);
         //R-type ins
         void add(unsigned char rs, unsigned char rt, unsigned char rd);
@@ -54,6 +55,7 @@ class MyRegister
         void printSnapShot(FILE *fp);
         virtual ~MyRegister();
         unsigned int reg[32];
+        MemoryManager* memoryManager;
 
     protected:
     private:

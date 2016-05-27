@@ -4,9 +4,10 @@ MyRegister::MyRegister(){
         reg[i] = 0;
     }
 }
-MyRegister::MyRegister(FILE* dImage)
+MyRegister::MyRegister(FILE* dImage, MemoryManager* memoryManager)
 {
     //ctor
+    this->memoryManager = memoryManager;
     for(int i=0; i<32; i++){
         reg[i] = 0;
     }
