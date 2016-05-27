@@ -26,23 +26,19 @@ Cache::Cache(int cacheSize, int blockSize,int setAssociativity)
 Cache::~Cache()
 {
     //dtor
-    printf("1");
+
     delete [] valid;
-    printf("2");
     delete [] tag;
-    printf("3");
     delete [] mru;
-    printf("4");
     delete [] content;
-    printf("5");
 }
 int Cache::getBlockIndex(unsigned int physicalAddress){
     //corresponding block index
     unsigned int blockIndex = physicalAddress/blockSize;
-    unsigned int setIndex = physicalAddress/blockSize/setAssociativity;
+    unsigned int setIndex = (blockIndex/setAssociativity)%numOfSets;
     unsigned int startBlockIndex = setIndex*setAssociativity;
     for(int i=0; i<setAssociativity; i++){
-        if(valid[i+startBlockIndex] && tag[i+startBlockIndex] == blockIndex){
+        if(valid[i+startBlockIndex] == 1 && tag[i+startBlockIndex] == blockIndex){
             //stored block index. different than corresponding block index because of set associativity
             return startBlockIndex + i;
         }
@@ -51,7 +47,7 @@ int Cache::getBlockIndex(unsigned int physicalAddress){
 }
 bool Cache::isValid(unsigned int physicalAddress){
     //needs to be updated before used
-    unsigned int setIndex = physicalAddress/blockSize/setAssociativity;
+    unsigned int setIndex = (physicalAddress/blockSize/setAssociativity)%numOfSets;
     unsigned int startBlockIndex = setIndex*setAssociativity;
     for(int i=0; i<setAssociativity; i++){
         if(valid[startBlockIndex + i] == 1 && tag[startBlockIndex+i] == physicalAddress)
@@ -61,7 +57,7 @@ bool Cache::isValid(unsigned int physicalAddress){
 }
 void Cache::updateMru(int index){
     mru[index] = 1;
-    int setIndex = index/setAssociativity;
+    int setIndex = (index/setAssociativity)%numOfSets;
     int startBlockIndex = setIndex*setAssociativity;
     int sum = 0;
     for(int i=0; i<setAssociativity; i++){
@@ -76,8 +72,9 @@ void Cache::updateMru(int index){
     }
 }
 int Cache::getVictimBlockIndex(unsigned int physicalAddress){
-    unsigned int setIndex = physicalAddress/blockSize/setAssociativity;
+    unsigned int setIndex = (physicalAddress/blockSize/setAssociativity)%numOfSets;
     unsigned int startBlockIndex = setIndex*setAssociativity;
+    printf("startBlcokIndex = %d\n", startBlockIndex);
     //check if there are any invalid bits
     for(int i=0; i<setAssociativity; i++){
         if(valid[startBlockIndex + i] == 0)
@@ -88,10 +85,14 @@ int Cache::getVictimBlockIndex(unsigned int physicalAddress){
         if(mru[startBlockIndex + i] == 0)
             return startBlockIndex + i;
     }
+    printf("no space!!\n");
     return startBlockIndex;
 }
 void Cache::replaceBlock(int victimBlockndex, unsigned int physicalAddress, unsigned char* content){
     valid[victimBlockndex] = 1;
+    if(victimBlockndex >= numOfBlocks){
+        printf("ououtoutoutoutoutoutoutoutoutoutoutoutt\n");
+    }
     tag[victimBlockndex] = physicalAddress/blockSize;
     int victimByteIndex = victimBlockndex * blockSize;
     for(int i=0; i<blockSize; i++){

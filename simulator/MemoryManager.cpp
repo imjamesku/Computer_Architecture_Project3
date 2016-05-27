@@ -40,15 +40,10 @@ MemoryManager::~MemoryManager()
 {
     //dtor
     delete this->iTLB;
-    //printf("1");
     delete this->iPageTable;
-    //printf("2");
     delete [] this->iDisk;
-    //printf("3");
     delete this->iMemory;
-    //printf("4");
     delete this->iCache;
-    //printf("5");
 }
 void MemoryManager::initializeDisk(unsigned char* iInput){
     for(int i=0; i<1024; i++){
@@ -114,6 +109,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
     else{
         //page fault
         iPageTalbeMisses++;
+        iCacheMisses++;
         unsigned int virtualPageHeadAddress = virtualAddress - virtualAddress % iMemoryPageSize;
         //printf("virtualPageHeadAddress = %u\n", virtualPageHeadAddress);
         unsigned char* virtualPageHeadPointer = iDisk + virtualPageHeadAddress;
@@ -124,11 +120,15 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         iPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
         //re-translate address
         physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
+        //printf("virtualAddress = %d\n", virtualAddress);
+        //printf("physicalAddress = %d\n", physicalAddress);
         //load to cache
         unsigned int blockHeadAddress = iCache->getBlockHeadAddress(physicalAddress);
+        //printf("block head Add = %d\n", blockHeadAddress);
         iMemory->updateLastRefCycle(physicalAddress, cycle);
         unsigned char* blockHeadDataPointer = iMemory->getMemoryPointer(blockHeadAddress);
         int victimBlockIndex = iCache->getVictimBlockIndex(blockHeadAddress);
+        //printf("victim block index = %d\n", victimBlockIndex);
         iCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
         iCache->updateMru(victimBlockIndex);
         returnDataPointer = iCache->getData(victimBlockIndex, physicalAddress);

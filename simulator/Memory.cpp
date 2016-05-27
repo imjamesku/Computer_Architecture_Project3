@@ -58,7 +58,7 @@ void Memory::setMemoryToZero(){
         memory[i] = 0;
 }
 void Memory::updateLastRefCycle(unsigned int physicalAddress, int cycle){
-    unsigned int physicalPageNumber = physicalAddress/pageSize;
+    unsigned int physicalPageNumber = (physicalAddress/pageSize)%numberOfPages;
     this->lastRefCycle[physicalPageNumber] = cycle;
 }
 unsigned int Memory::getVictimPageHeadPhysicalAddress(){
