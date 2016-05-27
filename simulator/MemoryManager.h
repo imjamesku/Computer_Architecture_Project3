@@ -31,6 +31,7 @@ class MemoryManager
         void initializeDisk(unsigned char* iInput);
         unsigned int getPhysicalAddressViaPageTable(unsigned int vertualAddress);
         unsigned char* getIData(unsigned int vertualAddress, int cycle);
+        unsigned char* getDData(unsigned int vertualAddress, int cycle);
         unsigned char* swapPages(unsigned int virtualAddress);
         void printReport();
         void displayReport();

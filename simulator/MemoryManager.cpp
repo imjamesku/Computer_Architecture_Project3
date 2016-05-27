@@ -155,6 +155,96 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
 
 
 }
+unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
+    int dTlbIndex = dTLB->getIndexToTargetPhysicalAddress(virtualAddress);
+    if(dTlbIndex != -1){
+        //TLB hit
+        dTlbHits++;
+        unsigned int physicalAddress = dTLB->getPhysicalAddress(dTlbIndex, virtualAddress);
+        dTLB->updateLastRefCycle(dTlbIndex, cycle);
+        //try to access cache first
+        int dCacheBlockIndex = dCache->getBlockIndex(physicalAddress);
+        if(dCacheBlockIndex != -1){
+            //cache hit
+            dCacheHits++;
+            dCache->updateMru(dCacheBlockIndex);
+            return dCache->getData(dCacheBlockIndex, physicalAddress);
+        }
+        //cache miss
+        dCacheMisses++;
+        unsigned int blockHeadAddress = dCache->getBlockHeadAddress(physicalAddress);
+        dMemory->updateLastRefCycle(blockHeadAddress, cycle);//may be different than golden
+        unsigned char* blockHeadDataPointer = dMemory->getMemoryPointer(blockHeadAddress);
+        int victimBlockIndex = dCache->getVictimBlockIndex(blockHeadAddress);
+        dCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
+        dCache->updateMru(victimBlockIndex);
+        return dCache->getData(victimBlockIndex, physicalAddress);
+    }
+    //TLB missed
+    dTlbMisses++;
+    unsigned char* returnDataPointer;
+    unsigned int physicalAddress;
+    if(dPageTable->getIsInMemory(virtualAddress) == 1){
+        //Page table hit
+        dPageTableHits++;
+        physicalAddress = dPageTable->getPhysicalAddress(virtualAddress);
+        //try to access cache first
+        int dCacheBlockIndex = dCache->getBlockIndex(physicalAddress);
+        if(dCacheBlockIndex != -1){
+            //cache hit
+            dCacheHits++;
+            dCache->updateMru(dCacheBlockIndex);
+            returnDataPointer = dCache->getData(dCacheBlockIndex, physicalAddress);
+        }
+        else{
+            //cache missed
+            dCacheMisses++;
+            unsigned int blockHeadAddress = dCache->getBlockHeadAddress(physicalAddress);
+            dMemory->updateLastRefCycle(physicalAddress, cycle);//may be different than golden
+            unsigned char* blockHeadDataPointer = dMemory->getMemoryPointer(blockHeadAddress);
+            int victimBlockIndex = dCache->getVictimBlockIndex(blockHeadAddress);
+            dCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
+            dCache->updateMru(victimBlockIndex);
+            returnDataPointer = dCache->getData(victimBlockIndex, physicalAddress);
+        }
+
+        //return iMemory->getMemoryPointer(physicalAddress);
+    }
+    else{
+        //page fault
+        dPageTableMisses++;
+        dCacheMisses++;
+        unsigned int virtualPageHeadAddress = virtualAddress - virtualAddress % dMemoryPageSize;
+        //printf("virtualPageHeadAddress = %u\n", virtualPageHeadAddress);
+        unsigned char* virtualPageHeadPointer = dDisk + virtualPageHeadAddress;
+        unsigned int victimPageHeadPhysicalAddress = dMemory->getVictimPageHeadPhysicalAddress();
+        //printf("victimPageHeadPhysicalAddress = %d\n", victimPageHeadPhysicalAddress);
+        dMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
+        dMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
+        dPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
+        //re-translate address
+        physicalAddress = dPageTable->getPhysicalAddress(virtualAddress);
+        //printf("virtualAddress = %d\n", virtualAddress);
+        //printf("physicalAddress = %d\n", physicalAddress);
+        //load to cache
+        unsigned int blockHeadAddress = dCache->getBlockHeadAddress(physicalAddress);
+        //printf("block head Add = %d\n", blockHeadAddress);
+        dMemory->updateLastRefCycle(physicalAddress, cycle);
+        unsigned char* blockHeadDataPointer = dMemory->getMemoryPointer(blockHeadAddress);
+        int victimBlockIndex = dCache->getVictimBlockIndex(blockHeadAddress);
+        //printf("victim block index = %d\n", victimBlockIndex);
+        dCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
+        dCache->updateMru(victimBlockIndex);
+        returnDataPointer = dCache->getData(victimBlockIndex, physicalAddress);
+        //printf("physicalAddress = %d\n", physicalAddress);
+        //return iMemory->getMemoryPointer(physicalAddress);
+    }
+    //update TLB
+    int victimIndex = dTLB->getVictimIndex();
+    dTLB->replacePage(victimIndex, virtualAddress, physicalAddress);
+    dTLB->updateLastRefCycle(victimIndex, cycle);
+    return returnDataPointer;
+}
 void MemoryManager::displayReport(){
     printf("ICache :\n");
     printf("# hits: %u\n", iCacheHits);
