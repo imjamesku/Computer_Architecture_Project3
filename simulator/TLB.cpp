@@ -64,3 +64,12 @@ void TLB::replacePage(int index, unsigned int virtualAddress, unsigned int physi
     physicalPageNumber[index] = physicalAddress/pageSize;
     valid[index] = 1;
 }
+void TLB::setToInvalid(unsigned int physicalAddress){
+    unsigned int victimPhysicalPageNumber = physicalAddress / pageSize;
+    for(int i=0; i<numOfEntries; i++){
+        if(physicalPageNumber[i] == victimPhysicalPageNumber){
+            valid[i] = 0;
+            break;
+        }
+    }
+}

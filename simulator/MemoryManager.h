@@ -32,8 +32,9 @@ class MemoryManager
         unsigned int getPhysicalAddressViaPageTable(unsigned int vertualAddress);
         unsigned char* getIData(unsigned int virtualAddress, int cycle);
         unsigned char* getDData(unsigned int virtualAddress, int cycle);
-        void writeDData(unsigned int virtualAddress, int lengthInbytes, int cycle);
+        void writeDData(unsigned int virtualAddress, unsigned char* data, int lengthInbytes, int cycle);
         unsigned char* swapPages(unsigned int virtualAddress);
+        void writeDataToDDisk(unsigned int virtualAddress, unsigned char* data, int lengthInBytes);
         void printReport();
         void displayReport();
         virtual ~MemoryManager();

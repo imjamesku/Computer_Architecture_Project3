@@ -45,15 +45,9 @@ int Cache::getBlockIndex(unsigned int physicalAddress){
     }
     return -1;
 }
-bool Cache::isValid(unsigned int physicalAddress){
+bool Cache::isValid(int blockIndex){
     //needs to be updated before used
-    unsigned int setIndex = (physicalAddress/blockSize/setAssociativity)%numOfSets;
-    unsigned int startBlockIndex = setIndex*setAssociativity;
-    for(int i=0; i<setAssociativity; i++){
-        if(valid[startBlockIndex + i] == 1 && tag[startBlockIndex+i] == physicalAddress)
-            return 1;
-    }
-    return 0;
+    return valid[blockIndex];
 }
 void Cache::updateMru(int index){
     mru[index] = 1;

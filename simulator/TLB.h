@@ -12,6 +12,7 @@ class TLB
         void updateLastRefCycle(int index, int cycle);
         int getVictimIndex()const;
         void replacePage(int index, unsigned int virtualAddress, unsigned int physicalAddress);
+        void setToInvalid(unsigned int physicalAddress);
         virtual ~TLB();
         //variables
         bool* valid;
