@@ -394,3 +394,29 @@ void MemoryManager::displayReport(){
     printf("# misses: %u\n\n", dPageTableMisses);
 }
 
+void MemoryManager::printReport(FILE* reportFile){
+    fprintf(reportFile, "ICache :\n");
+    fprintf(reportFile, "# hits: %u\n", iCacheHits);
+    fprintf(reportFile,"# misses: %u\n\n",iCacheMisses);
+
+    fprintf(reportFile,"DCache :\n");
+    fprintf(reportFile,"# hits: %u\n", dCacheHits);
+    fprintf(reportFile,"# misses: %u\n\n", dCacheMisses);
+
+    fprintf(reportFile,"ITLB :\n");
+    fprintf(reportFile,"# hits: %u\n", iTlbHits);
+    fprintf(reportFile,"# misses: %u\n\n", iTlbMisses);
+
+    fprintf(reportFile,"DTLB :\n");
+    fprintf(reportFile,"# hits: %u\n", dTlbHits);
+    fprintf(reportFile,"# misses: %u\n\n", dTlbMisses);
+
+    fprintf(reportFile,"IPageTable :\n");
+    fprintf(reportFile,"# hits: %u\n", iPageTableHits);
+    fprintf(reportFile,"# misses: %u\n\n", iPageTalbeMisses);
+
+    fprintf(reportFile,"DPageTable :\n");
+    fprintf(reportFile,"# hits: %u\n", dPageTableHits);
+    fprintf(reportFile,"# misses: %u\n\n", dPageTableMisses);
+}
+

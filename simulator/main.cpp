@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
     FILE *insOut;
     FILE *snapShot;
     FILE *errorFile;
+    FILE* reportFile = fopen("report.rpt", "w");
 
     FILE* debug;
 
@@ -101,6 +102,7 @@ int main(int argc, char* argv[])
       // system("PAUSE");
     }
     memoryManager->displayReport();
+    memoryManager->printReport(reportFile);
     delete dMemory;
     delete iMemory;
     delete controlUnit;
@@ -113,6 +115,7 @@ int main(int argc, char* argv[])
     fclose(snapShot);
     fclose(errorFile);
     fclose(debug);
+    fclose(reportFile);
     return 0;
 }
 void printSnapShot(FILE* snapShot, int cycle, MyRegister* reg, ProgramCounter* pc){

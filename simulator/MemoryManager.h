@@ -1,9 +1,11 @@
 #ifndef MEMORYMANAGER_H
 #define MEMORYMANAGER_H
+#include <cstdio>
 #include "Memory.h"
 #include "PageTable.h"
 #include "TLB.h"
 #include "Cache.h"
+
 
 
 class MemoryManager
@@ -35,7 +37,7 @@ class MemoryManager
         void writeDData(unsigned int virtualAddress, unsigned char* data, int lengthInbytes, int cycle);
         unsigned char* swapPages(unsigned int virtualAddress);
         void writeDataToDDisk(unsigned int virtualAddress, unsigned char* data, int lengthInBytes);
-        void printReport();
+        void printReport(FILE* reportFile);
         void displayReport();
         virtual ~MemoryManager();
        // unsigned char readData(unsigned int address);
