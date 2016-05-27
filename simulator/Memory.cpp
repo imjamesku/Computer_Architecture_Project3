@@ -53,6 +53,11 @@ int Memory::getMemorySize(){
 unsigned char* Memory::getMemoryPointer(int offset){
     return (memory+offset);
 }
+void Memory::writeData(unsigned int physicalAddress, unsigned char* data, int length){
+    for(int i=0; i<length; i++){
+        memory[physicalAddress + i] = data[i];
+    }
+}
 void Memory::setMemoryToZero(){
     for(unsigned int i=0; i<this->memorySize; i++)
         memory[i] = 0;

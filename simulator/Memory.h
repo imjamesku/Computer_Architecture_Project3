@@ -10,6 +10,7 @@ class Memory
         Memory(FILE *image,unsigned int startFrom);
         Memory(int memorySize, int pageSize);
         unsigned char* getMemoryPointer(int offset);
+        void writeData(unsigned int physicalAddress, unsigned char* data, int length);
         void setMemorySize(int size);
         int getMemorySize();
         void updateLastRefCycle(unsigned int physicalAddress, int cycle);
