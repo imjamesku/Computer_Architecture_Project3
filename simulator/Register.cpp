@@ -109,9 +109,11 @@ void MyRegister::addiu(unsigned char rs, unsigned char rt, unsigned int immediat
 void MyRegister::lw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
     reg[rt] = dMemory->memory[offset] << 24 | dMemory->memory[offset+1] << 16 | dMemory->memory[offset+2] << 8 | dMemory->memory[offset+3];
+    unsigned char* data = memoryManager->getDData(offset, cycle);
 }
 void MyRegister::lh(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
+    unsigned char* data= memoryManager->getDData(offset, cycle);
     if( (dMemory->memory[offset] >> 7) == 0 ){
         reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
     }
@@ -124,11 +126,13 @@ void MyRegister::lh(unsigned char rs, unsigned char rt, unsigned int immediate, 
 }
 void MyRegister::lhu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
+    unsigned char* data= memoryManager->getDData(offset, cycle);
     reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
 
 }
 void MyRegister::lb(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
+    unsigned char* data = memoryManager->getDData(offset, cycle);
     if( (dMemory->memory[offset] >> 7) == 0 ){
         reg[rt] = dMemory->memory[offset];
     }
@@ -141,6 +145,7 @@ void MyRegister::lb(unsigned char rs, unsigned char rt, unsigned int immediate, 
 }
 void MyRegister::lbu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
+    unsigned char* data = memoryManager->getDData(offset, cycle);
     reg[rt] = dMemory->memory[offset];
 }
 void MyRegister::sw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
@@ -149,15 +154,28 @@ void MyRegister::sw(unsigned char rs, unsigned char rt, unsigned int immediate, 
     dMemory->memory[offset+1] = reg[rt] >> 16;
     dMemory->memory[offset+2] = reg[rt] >> 8;
     dMemory->memory[offset+3] = reg[rt];
+    unsigned char data[4];
+    data[0] = reg[rt] >> 24;
+    data[1] = reg[rt] >> 16;
+    data[2] = reg[rt] >> 8;
+    data[3] = reg[rt];
+    memoryManager->writeDData(offset, data, 4, cycle);
 }
 void MyRegister::sh(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
     dMemory->memory[offset] = reg[rt] >> 8;
     dMemory->memory[offset+1] = reg[rt];
+    unsigned char data[2];
+    data[0] = reg[rt] >> 8;
+    data[1] = reg[rt];
+    memoryManager->writeDData(offset, data, 2, cycle);
 }
 void MyRegister::sb(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
     dMemory->memory[offset] = reg[rt];
+    unsigned char data[1];
+    data[0] = reg[rt];
+    memoryManager->writeDData(offset, data, 1, cycle);
 }
 void MyRegister::lui(unsigned char rt, unsigned int immediate){
     reg[rt] = immediate << 16;

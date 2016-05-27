@@ -129,6 +129,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         unsigned int victimPageHeadPhysicalAddress = iMemory->getVictimPageHeadPhysicalAddress();
         //printf("victimPageHeadPhysicalAddress = %d\n", victimPageHeadPhysicalAddress);
         iMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
+        iCache->deleteEntirePage(victimPageHeadPhysicalAddress, iMemoryPageSize);
         iTLB->setToInvalid(victimPageHeadPhysicalAddress);//if the data is swapped to disk, we need to set TLB's valid to 0
         iMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
         iPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
@@ -222,6 +223,7 @@ unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
         unsigned int victimPageHeadPhysicalAddress = dMemory->getVictimPageHeadPhysicalAddress();
         //printf("victimPageHeadPhysicalAddress = %d\n", victimPageHeadPhysicalAddress);
         dMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
+        dCache->deleteEntirePage(victimPageHeadPhysicalAddress, dMemoryPageSize);
         dTLB->setToInvalid(victimPageHeadPhysicalAddress);
         dMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
         dPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
@@ -265,6 +267,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
             dCache->writeData(dCacheBlockIndex, physicalAddress, data, lengthInbytes);
             dMemory->writeData(physicalAddress, data, lengthInbytes);
             this->writeDataToDDisk(virtualAddress, data, lengthInbytes);
+            return;
         }
         //cache miss
         dCacheMisses++;
@@ -279,6 +282,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
         dMemory->writeData(physicalAddress, data, lengthInbytes);
         this->writeDataToDDisk(virtualAddress, data, lengthInbytes);
         //return dCache->getData(victimBlockIndex, physicalAddress);
+        return;
     }
     //TLB missed
     dTlbMisses++;
@@ -329,6 +333,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
         /*r***************remember to add setToInvalid**************/
         //printf("victimPageHeadPhysicalAddress = %d\n", victimPageHeadPhysicalAddress);
         dMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
+        dCache->deleteEntirePage(victimPageHeadPhysicalAddress, dMemoryPageSize);
         dTLB->setToInvalid(victimPageHeadPhysicalAddress);
         dMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
         dPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
@@ -378,7 +383,7 @@ void MemoryManager::displayReport(){
 
     printf("DTLB :\n");
     printf("# hits: %u\n", dTlbHits);
-    printf("# misses: %u\n\n", dTlbHits);
+    printf("# misses: %u\n\n", dTlbMisses);
 
     printf("IPageTable :\n");
     printf("# hits: %u\n", iPageTableHits);

@@ -109,3 +109,12 @@ void Cache::writeData(int storedBlcokIndex, unsigned int physicalAddrss, unsigne
 unsigned int Cache::getBlockHeadAddress(unsigned int physicalAddress){
     return physicalAddress - physicalAddress%blockSize;
 }
+void Cache::deleteEntirePage(unsigned int pageHeadAddress, int pageSize){
+    int numOfBlocksPerPage = pageSize/blockSize;
+    int pageNeedToBeDeleted = pageHeadAddress/pageSize;
+    for(int i=0; i<numOfBlocks; i++){
+        if(tag[i]/numOfBlocksPerPage == pageNeedToBeDeleted){
+            valid[i] = 0;
+        }
+    }
+}

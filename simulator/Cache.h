@@ -15,6 +15,7 @@ class Cache
         unsigned char* getData(int storedBlockIndex, unsigned int physicalAddress);
         void writeData(int storedBlcokIndex, unsigned int physicalAddrss, unsigned char* data, int lengthInBytes);
         unsigned int getBlockHeadAddress(unsigned int physicalAddress);
+        void deleteEntirePage(unsigned int pageHeadAddress, int pageSize);
         virtual ~Cache();
 
         int cacheSize;
