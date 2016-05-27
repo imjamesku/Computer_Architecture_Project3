@@ -21,6 +21,12 @@ MemoryManager::MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSi
     this->iMemory = new Memory(iMemorySize, iMemoryPageSize);
     this->iCache = new Cache(totalICacheSize, iCacheBlockSize, iCacheAssociativity);
 
+    this->dTLB = new TLB(dMemoryPageSize);
+    this->dPageTable = new PageTable(dMemoryPageSize);
+    this->dDisk = new unsigned char[1024];
+    this->dMemory = new Memory(dMemorySize, dMemoryPageSize);
+    this->dCache = new Cache(totalDCacheSize, dCacheBlockSize, dCacheAssociativity);
+
     iCacheHits = 0;
     iCacheMisses = 0;
     dCacheHits = 0;
@@ -44,6 +50,12 @@ MemoryManager::~MemoryManager()
     delete [] this->iDisk;
     delete this->iMemory;
     delete this->iCache;
+
+    delete this->dTLB;
+    delete this->dPageTable;
+    delete [] this->dDisk;
+    delete this->dMemory;
+    delete this->dCache;
 }
 void MemoryManager::initializeDisk(unsigned char* iInput){
     for(int i=0; i<1024; i++){

@@ -18,6 +18,13 @@ class MemoryManager
         Cache* iCache;
         Memory* iMemory;
         unsigned char* iDisk;
+
+        TLB* dTLB;
+        PageTable* dPageTable;
+        Cache* dCache;
+        Memory* dMemory;
+        unsigned char* dDisk;
+
         MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSize, int dMemoryPageSize,
                       int totalICacheSize, int iCacheBlockSize, int iCacheAssociativity,
                       int totalDCacheSize, int dCacheBlockSize, int dCacheAssociativity);
