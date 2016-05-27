@@ -105,6 +105,13 @@ unsigned char* Cache::getData(int storedBlockIndex, unsigned int physicalAddress
     return content + (blockSize*storedBlockIndex + blockOffset);
 }
 
+void Cache::writeData(int storedBlcokIndex, unsigned int physicalAddrss, unsigned char* data, int lengthInBytes){
+    unsigned int startByteIndex = storedBlcokIndex*blockSize + physicalAddrss % blockSize;
+    for(int i=0; i<lengthInBytes; i++){
+        content[startByteIndex + i] = data[i];
+    }
+}
+
 unsigned int Cache::getBlockHeadAddress(unsigned int physicalAddress){
     return physicalAddress - physicalAddress%blockSize;
 }

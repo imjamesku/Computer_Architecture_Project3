@@ -13,6 +13,7 @@ class Cache
         int getVictimBlockIndex(unsigned int physicalAddress);
         void replaceBlock(int victimBlockIndex, unsigned int physicalAddress, unsigned char* content);
         unsigned char* getData(int storedBlockIndex, unsigned int physicalAddress);
+        void writeData(int storedBlcokIndex, unsigned int physicalAddrss, unsigned char* data, int lengthInBytes);
         unsigned int getBlockHeadAddress(unsigned int physicalAddress);
         virtual ~Cache();
 

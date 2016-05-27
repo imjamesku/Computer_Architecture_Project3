@@ -81,7 +81,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         //cache miss
         iCacheMisses++;
         unsigned int blockHeadAddress = iCache->getBlockHeadAddress(physicalAddress);
-        iMemory->updateLastRefCycle(blockHeadAddress, cycle);//may be different than golden
+       // iMemory->updateLastRefCycle(blockHeadAddress, cycle);//may be different than golden
         unsigned char* blockHeadDataPointer = iMemory->getMemoryPointer(blockHeadAddress);
         int victimBlockIndex = iCache->getVictimBlockIndex(blockHeadAddress);
         iCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
@@ -108,7 +108,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
             //cache missed
             iCacheMisses++;
             unsigned int blockHeadAddress = iCache->getBlockHeadAddress(physicalAddress);
-            iMemory->updateLastRefCycle(physicalAddress, cycle);//may be different than golden
+          //  iMemory->updateLastRefCycle(physicalAddress, cycle);//may be different than golden
             unsigned char* blockHeadDataPointer = iMemory->getMemoryPointer(blockHeadAddress);
             int victimBlockIndex = iCache->getVictimBlockIndex(blockHeadAddress);
             iCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
@@ -173,7 +173,7 @@ unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
         //cache miss
         dCacheMisses++;
         unsigned int blockHeadAddress = dCache->getBlockHeadAddress(physicalAddress);
-        dMemory->updateLastRefCycle(blockHeadAddress, cycle);//may be different than golden
+       // dMemory->updateLastRefCycle(blockHeadAddress, cycle);//may be different than golden
         unsigned char* blockHeadDataPointer = dMemory->getMemoryPointer(blockHeadAddress);
         int victimBlockIndex = dCache->getVictimBlockIndex(blockHeadAddress);
         dCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
@@ -200,7 +200,7 @@ unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
             //cache missed
             dCacheMisses++;
             unsigned int blockHeadAddress = dCache->getBlockHeadAddress(physicalAddress);
-            dMemory->updateLastRefCycle(physicalAddress, cycle);//may be different than golden
+        //    dMemory->updateLastRefCycle(physicalAddress, cycle);//may be different than golden
             unsigned char* blockHeadDataPointer = dMemory->getMemoryPointer(blockHeadAddress);
             int victimBlockIndex = dCache->getVictimBlockIndex(blockHeadAddress);
             dCache->replaceBlock(victimBlockIndex, blockHeadAddress, blockHeadDataPointer);
@@ -244,6 +244,9 @@ unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
     dTLB->replacePage(victimIndex, virtualAddress, physicalAddress);
     dTLB->updateLastRefCycle(victimIndex, cycle);
     return returnDataPointer;
+}
+void MemoryManager::writeDData(unsigned int virtualAddress, int lengthInbytes, int cycle){
+
 }
 void MemoryManager::displayReport(){
     printf("ICache :\n");

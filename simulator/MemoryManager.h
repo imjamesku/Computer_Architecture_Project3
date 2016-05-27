@@ -30,8 +30,9 @@ class MemoryManager
                       int totalDCacheSize, int dCacheBlockSize, int dCacheAssociativity);
         void initializeDisk(unsigned char* iInput);
         unsigned int getPhysicalAddressViaPageTable(unsigned int vertualAddress);
-        unsigned char* getIData(unsigned int vertualAddress, int cycle);
-        unsigned char* getDData(unsigned int vertualAddress, int cycle);
+        unsigned char* getIData(unsigned int virtualAddress, int cycle);
+        unsigned char* getDData(unsigned int virtualAddress, int cycle);
+        void writeDData(unsigned int virtualAddress, int lengthInbytes, int cycle);
         unsigned char* swapPages(unsigned int virtualAddress);
         void printReport();
         void displayReport();
