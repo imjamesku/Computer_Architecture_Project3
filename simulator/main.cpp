@@ -54,12 +54,12 @@ int main(int argc, char* argv[])
     pc = new ProgramCounter(readProgramCounter);
     iMemory = new Memory(iImage, pc->PC);
 
-    memoryManager->initializeDisk(iMemory->memory);
-
     //read dimage
     reg = new MyRegister(dImage);
    // reg->print();
     dMemory = new Memory(dImage, 0);
+
+    memoryManager->initializeDisk(iMemory->memory, dMemory->memory);
     //Decoder d1(iMemory->memory + pc->PC);
     //d1.print();
     //printf("words = %d\n", iMemory->words);

@@ -28,7 +28,7 @@ class MemoryManager
         MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSize, int dMemoryPageSize,
                       int totalICacheSize, int iCacheBlockSize, int iCacheAssociativity,
                       int totalDCacheSize, int dCacheBlockSize, int dCacheAssociativity);
-        void initializeDisk(unsigned char* iInput);
+        void initializeDisk(unsigned char* iInput, unsigned char* dInput);
         unsigned int getPhysicalAddressViaPageTable(unsigned int vertualAddress);
         unsigned char* getIData(unsigned int virtualAddress, int cycle);
         unsigned char* getDData(unsigned int virtualAddress, int cycle);

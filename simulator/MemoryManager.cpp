@@ -57,9 +57,10 @@ MemoryManager::~MemoryManager()
     delete this->dMemory;
     delete this->dCache;
 }
-void MemoryManager::initializeDisk(unsigned char* iInput){
+void MemoryManager::initializeDisk(unsigned char* iInput, unsigned char* dInput){
     for(int i=0; i<1024; i++){
         this->iDisk[i] = iInput[i];
+        this->dDisk[i] = dInput[i];
     }
 }
 
@@ -281,7 +282,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
     }
     //TLB missed
     dTlbMisses++;
-    unsigned char* returnDataPointer;
+  //  unsigned char* returnDataPointer;
     unsigned int physicalAddress;
     if(dPageTable->getIsInMemory(virtualAddress) == 1){
         //Page table hit
@@ -328,7 +329,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
         /*r***************remember to add setToInvalid**************/
         //printf("victimPageHeadPhysicalAddress = %d\n", victimPageHeadPhysicalAddress);
         dMemory->swapPages(virtualPageHeadPointer, victimPageHeadPhysicalAddress);
-        dTLB->setToInvalid(physicalAddress);
+        dTLB->setToInvalid(victimPageHeadPhysicalAddress);
         dMemory->updateLastRefCycle(victimPageHeadPhysicalAddress, cycle);
         dPageTable->swapPages(victimPageHeadPhysicalAddress, virtualAddress);
         //re-translate address
