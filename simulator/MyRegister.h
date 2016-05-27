@@ -29,14 +29,14 @@ class MyRegister
         // I-type ins
         void addi(unsigned char rs, unsigned char rt, unsigned int immediate);
         void addiu(unsigned char rs, unsigned char rt, unsigned int immediate);
-        void lw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
-        void lh(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
-        void lhu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
-        void lb(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
-        void lbu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
-        void sw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
-        void sh(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
-        void sb(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory);
+        void lw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
+        void lh(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
+        void lhu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
+        void lb(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
+        void lbu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
+        void sw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
+        void sh(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
+        void sb(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle);
         void lui(unsigned char rt, unsigned int immediate);
         void andi(unsigned char rs, unsigned char rt, unsigned int immediate);
         void ori(unsigned char rs, unsigned char rt, unsigned int immediate);

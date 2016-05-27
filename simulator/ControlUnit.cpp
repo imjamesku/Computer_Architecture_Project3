@@ -71,7 +71,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
         int rdSign = (rdValue) >> 31;
         if(doInstruction)
             reg->sub(d1->rs, d1->rt, d1->rd);
-        
+
         //if( rsSign != rtSign && rsSign != rdSign)
         if(rsSign == rt2sComplementSign && rsSign != rdSign)
             printError(cycle, NumOverFlow);
@@ -122,7 +122,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
         unsigned int rtSign = (rtValue) >> 31;
         if(doInstruction)
             reg->addi(d1->rs, d1->rt, d1->immediate);
-        
+
         if( rsSign == immediateSign && rsSign != rtSign )
             printError(cycle, NumOverFlow);
     }
@@ -146,7 +146,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->lw(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->lw(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "lh"){
         unsigned int offset = reg->reg[d1->rs] + d1->immediate;
@@ -163,7 +163,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->lh(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->lh(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "lhu"){
         unsigned int offset = reg->reg[d1->rs] + d1->immediate;
@@ -180,7 +180,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->lhu(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->lhu(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "lb"){
         unsigned int offset = reg->reg[d1->rs] + d1->immediate;
@@ -192,7 +192,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->lb(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->lb(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "lbu"){
         unsigned int offset = reg->reg[d1->rs] + d1->immediate;
@@ -204,7 +204,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->lbu(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->lbu(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "sw"){
         unsigned int offset = reg->reg[d1->rs] + d1->immediate;
@@ -221,7 +221,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->sw(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->sw(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "sh"){
         unsigned int offset = reg->reg[d1->rs] + d1->immediate;
@@ -238,7 +238,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->sh(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->sh(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "sb"){
         unsigned int offset = reg->reg[d1->rs] + d1->immediate;
@@ -250,7 +250,7 @@ int ControlUnit::execute(Decoder* d1, int cycle){
             doHalt = 1;
         }
         if(doInstruction)
-            reg->sb(d1->rs, d1->rt, d1->immediate, dMemory);
+            reg->sb(d1->rs, d1->rt, d1->immediate, dMemory, cycle);
     }
     else if(d1->instructionName == "lui"){
         if(doInstruction)
