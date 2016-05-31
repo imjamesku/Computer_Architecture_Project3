@@ -97,6 +97,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         //Page table hit
         iPageTableHits++;
         physicalAddress = iPageTable->getPhysicalAddress(virtualAddress);
+        iMemory->updateLastRefCycle(physicalAddress, cycle);
         //try to access cache first
         int iCacheBlockIndex = iCache->getBlockIndex(physicalAddress);
         if(iCacheBlockIndex != -1){
@@ -191,6 +192,7 @@ unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
         //Page table hit
         dPageTableHits++;
         physicalAddress = dPageTable->getPhysicalAddress(virtualAddress);
+        dMemory->updateLastRefCycle(physicalAddress, cycle);
         //try to access cache first
         int dCacheBlockIndex = dCache->getBlockIndex(physicalAddress);
         if(dCacheBlockIndex != -1){
@@ -292,6 +294,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
         //Page table hit
         dPageTableHits++;
         physicalAddress = dPageTable->getPhysicalAddress(virtualAddress);
+        dMemory->updateLastRefCycle(physicalAddress, cycle);
         //try to access cache first
         int dCacheBlockIndex = dCache->getBlockIndex(physicalAddress);
         if(dCacheBlockIndex != -1){

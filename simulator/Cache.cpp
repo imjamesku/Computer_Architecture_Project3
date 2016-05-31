@@ -1,5 +1,5 @@
 #include "Cache.h"
-#include "stdio.h"
+//#include "stdio.h"
 
 Cache::Cache(int cacheSize, int blockSize,int setAssociativity)
 {
@@ -55,7 +55,7 @@ void Cache::updateMru(int index){
     int startBlockIndex = setIndex*setAssociativity;
     int sum = 0;
     for(int i=0; i<setAssociativity; i++){
-        if(mru[startBlockIndex + i] == 1)
+        if(valid[startBlockIndex + i] && mru[startBlockIndex + i] == 1)
             sum++;
     }
     if(sum == setAssociativity){
@@ -68,7 +68,7 @@ void Cache::updateMru(int index){
 int Cache::getVictimBlockIndex(unsigned int physicalAddress){
     unsigned int setIndex = (physicalAddress/blockSize/setAssociativity)%numOfSets;
     unsigned int startBlockIndex = setIndex*setAssociativity;
-    printf("startBlcokIndex = %d\n", startBlockIndex);
+  //  printf("startBlcokIndex = %d\n", startBlockIndex);
     //check if there are any invalid bits
     for(int i=0; i<setAssociativity; i++){
         if(valid[startBlockIndex + i] == 0)
@@ -79,13 +79,13 @@ int Cache::getVictimBlockIndex(unsigned int physicalAddress){
         if(mru[startBlockIndex + i] == 0)
             return startBlockIndex + i;
     }
-    printf("no space!!\n");
+   // printf("no space!!\n");
     return startBlockIndex;
 }
 void Cache::replaceBlock(int victimBlockndex, unsigned int physicalAddress, unsigned char* content){
     valid[victimBlockndex] = 1;
     if(victimBlockndex >= numOfBlocks){
-        printf("ououtoutoutoutoutoutoutoutoutoutoutoutt\n");
+      //  printf("ououtoutoutoutoutoutoutoutoutoutoutoutt\n");
     }
     tag[victimBlockndex] = physicalAddress/blockSize;
     int victimByteIndex = victimBlockndex * blockSize;
@@ -115,6 +115,7 @@ void Cache::deleteEntirePage(unsigned int pageHeadAddress, int pageSize){
     for(int i=0; i<numOfBlocks; i++){
         if(tag[i]/numOfBlocksPerPage == pageNeedToBeDeleted){
             valid[i] = 0;
+            mru[i] = 0;
         }
     }
 }

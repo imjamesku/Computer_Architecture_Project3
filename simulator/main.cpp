@@ -79,16 +79,16 @@ int main(int argc, char* argv[])
     while(1){
         Decoder d3(iMemory->getMemoryPointer(pc->PC));
         Decoder testMemory(memoryManager->getIData(pc->PC, cycle));
-        printf("0x%x\n", testMemory.instruction);
-        testMemory.print();
+       // printf("0x%x\n", testMemory.instruction);
+        //testMemory.print();
         pc->PC += 4;
         fprintf(debug, "instruction = %x\n", d3.instruction);
 
         d3.printDebug(debug);
 
         cycle++;
-        printf("%d\n", cycle);
-        memoryManager->displayReport();
+        //printf("%d\n", cycle);
+       // memoryManager->displayReport();
         shutDown = controlUnit->execute(&d3, cycle);//run instruction
         if(d3.instructionName == "halt" || shutDown)
             break;
