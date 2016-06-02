@@ -108,45 +108,52 @@ void MyRegister::addiu(unsigned char rs, unsigned char rt, unsigned int immediat
 }
 void MyRegister::lw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
-    reg[rt] = dMemory->memory[offset] << 24 | dMemory->memory[offset+1] << 16 | dMemory->memory[offset+2] << 8 | dMemory->memory[offset+3];
+    if(rt != 0)
+        reg[rt] = dMemory->memory[offset] << 24 | dMemory->memory[offset+1] << 16 | dMemory->memory[offset+2] << 8 | dMemory->memory[offset+3];
     unsigned char* data = memoryManager->getDData(offset, cycle);
 }
 void MyRegister::lh(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
     unsigned char* data= memoryManager->getDData(offset, cycle);
-    if( (dMemory->memory[offset] >> 7) == 0 ){
-        reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
-    }
-    else{
-        reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
-        unsigned int t = 0xFFFF0000;
-        reg[rt] = reg[rt] | t;
+    if(rt != 0){
+        if( (dMemory->memory[offset] >> 7) == 0 ){
+            reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
+        }
+        else{
+            reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
+            unsigned int t = 0xFFFF0000;
+            reg[rt] = reg[rt] | t;
+        }
     }
 
 }
 void MyRegister::lhu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
     unsigned char* data= memoryManager->getDData(offset, cycle);
-    reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
+    if(rt != 0)
+        reg[rt] = dMemory->memory[offset] << 8 | dMemory->memory[offset+1];
 
 }
 void MyRegister::lb(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
     unsigned char* data = memoryManager->getDData(offset, cycle);
-    if( (dMemory->memory[offset] >> 7) == 0 ){
-        reg[rt] = dMemory->memory[offset];
-    }
-    else{
-        reg[rt] = dMemory->memory[offset];
-        unsigned int t = 0xFFFFFF00;
-        reg[rt] = reg[rt] | t;
+    if(rt != 0){
+        if( (dMemory->memory[offset] >> 7) == 0 ){
+            reg[rt] = dMemory->memory[offset];
+        }
+        else{
+            reg[rt] = dMemory->memory[offset];
+            unsigned int t = 0xFFFFFF00;
+            reg[rt] = reg[rt] | t;
+        }
     }
 
 }
 void MyRegister::lbu(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;
     unsigned char* data = memoryManager->getDData(offset, cycle);
-    reg[rt] = dMemory->memory[offset];
+    if(rt != 0)
+        reg[rt] = dMemory->memory[offset];
 }
 void MyRegister::sw(unsigned char rs, unsigned char rt, unsigned int immediate, Memory *dMemory, int cycle){
     unsigned int offset = reg[rs] + immediate;

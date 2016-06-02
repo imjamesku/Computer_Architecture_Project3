@@ -44,7 +44,9 @@ int ControlUnit::execute(Decoder* d1, int cycle){
            d1->instructionName != "beq" && d1->instructionName != "bne" && d1->instructionName != "bgtz"){
                 if(d1->rt == 0){
                     printError(cycle, WriteTo0);
-                    doInstruction = 0;
+                    if(d1->instructionName != "lw" && d1->instructionName != "lh" && d1->instructionName != "lhu" &&
+                       d1->instructionName != "lb" && d1->instructionName != "lbu")
+                            doInstruction = 0;
                 }
            }
     }
