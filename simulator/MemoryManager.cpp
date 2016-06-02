@@ -1,4 +1,5 @@
 #include "MemoryManager.h"
+#include <cstdio>
 
 MemoryManager::MemoryManager(int iMemorySize, int dMemorySize, int iMemoryPageSize, int dMemoryPageSize,
     int totalICacheSize, int iCacheBlockSize, int iCacheAssociativity,
@@ -75,6 +76,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         int iCacheBlockIndex = iCache->getBlockIndex(physicalAddress);
         if(iCacheBlockIndex != -1){
             //cache hit
+            printf("cycle = %d", cycle);
             iCacheHits++;
             iCache->updateMru(iCacheBlockIndex);
             return iCache->getData(iCacheBlockIndex, physicalAddress);
