@@ -19,6 +19,18 @@ int main(int argc, char* argv[])
     /*for(int i=0; i<argc; i++){
         printf("%s\n", argv[i]);
     }*/
+    if(argc == 11){
+        iMemorySize = atoi(argv[1]);
+        dMemorySize = atoi(argv[2]);
+        iMemoryPageSize = atoi(argv[3]);
+        dMemoryPageSize = atoi(argv[4]);
+        totalICacheSize = atoi(argv[5]);
+        iCacheBlockSize = atoi(argv[6]);
+        iCacheAssociativity = atoi(argv[7]);
+        totalDCacheSize = atoi(argv[8]);
+        dCacheBlockSize = atoi(argv[9]);
+        dCacheAssociativity = atoi(argv[10]);
+    }
     MemoryManager* memoryManager = new MemoryManager(iMemorySize, dMemorySize, iMemoryPageSize, dMemoryPageSize,
                                                      totalICacheSize, iCacheBlockSize, iCacheAssociativity, totalDCacheSize,
                                                     dCacheBlockSize, dCacheAssociativity);
@@ -101,7 +113,7 @@ int main(int argc, char* argv[])
 
       // system("PAUSE");
     }
-    memoryManager->displayReport();
+   // memoryManager->displayReport();
     memoryManager->printReport(reportFile);
     delete dMemory;
     delete iMemory;
