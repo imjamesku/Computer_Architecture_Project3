@@ -47,7 +47,6 @@ int main(int argc, char* argv[])
     unsigned int readProgramCounter;
     FILE *dImage;
     FILE *iImage;
-    FILE *insOut;
     FILE *snapShot;
     FILE *errorFile;
     FILE* reportFile = fopen("report.rpt", "w");
@@ -56,7 +55,6 @@ int main(int argc, char* argv[])
 
     dImage = fopen("dimage.bin", "rb");
     iImage = fopen("iimage.bin", "rb");
-    insOut = fopen("ins1.txt", "w");
     snapShot = fopen("snapshot.rpt", "w");
     errorFile = fopen("error_dump.rpt", "w");
     debug = fopen("debug.rpt", "w");
@@ -123,7 +121,6 @@ int main(int argc, char* argv[])
     delete memoryManager;
     fclose(iImage);
     fclose(dImage);
-    fclose(insOut);
     fclose(snapShot);
     fclose(errorFile);
     fclose(debug);

@@ -76,7 +76,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         int iCacheBlockIndex = iCache->getBlockIndex(physicalAddress);
         if(iCacheBlockIndex != -1){
             //cache hit
-            printf("cycle = %d", cycle);
+           // printf("cycle = %d\t", cycle);
             iCacheHits++;
             iCache->updateMru(iCacheBlockIndex);
             return iCache->getData(iCacheBlockIndex, physicalAddress);
@@ -104,6 +104,7 @@ unsigned char* MemoryManager::getIData(unsigned int virtualAddress, int cycle){
         int iCacheBlockIndex = iCache->getBlockIndex(physicalAddress);
         if(iCacheBlockIndex != -1){
             //cache hit
+           // printf("%d\t", cycle);
             iCacheHits++;
             iCache->updateMru(iCacheBlockIndex);
             returnDataPointer = iCache->getData(iCacheBlockIndex, physicalAddress);
@@ -173,6 +174,7 @@ unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
         if(dCacheBlockIndex != -1){
             //cache hit
             dCacheHits++;
+          //  printf("cycle = %d: hit%d\n", cycle, dCacheHits);
             dCache->updateMru(dCacheBlockIndex);
             return dCache->getData(dCacheBlockIndex, physicalAddress);
         }
@@ -200,6 +202,7 @@ unsigned char* MemoryManager::getDData(unsigned int virtualAddress, int cycle){
         if(dCacheBlockIndex != -1){
             //cache hit
             dCacheHits++;
+          //  printf("cycle = %d: hit%d\n", cycle, dCacheHits);
             dCache->updateMru(dCacheBlockIndex);
             returnDataPointer = dCache->getData(dCacheBlockIndex, physicalAddress);
         }
@@ -266,6 +269,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
         if(dCacheBlockIndex != -1){
             //cache hit
             dCacheHits++;
+         //   printf("cycle = %d: hit%d\n", cycle, dCacheHits);
             dCache->updateMru(dCacheBlockIndex);
             //return dCache->getData(dCacheBlockIndex, physicalAddress);
             dCache->writeData(dCacheBlockIndex, physicalAddress, data, lengthInbytes);
@@ -302,6 +306,7 @@ void MemoryManager::writeDData(unsigned int virtualAddress, unsigned char* data,
         if(dCacheBlockIndex != -1){
             //cache hit
             dCacheHits++;
+            //printf("cycle = %d: hit%d\n", cycle, dCacheHits);
             dCache->updateMru(dCacheBlockIndex);
 
             dCache->writeData(dCacheBlockIndex, physicalAddress, data, lengthInbytes);
